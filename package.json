@@ -1,0 +1,8 @@
+{
+    "name": "projetedt_backend",
+    "version": "0.1.0",
+    "dependencies": {
+        "express": "^4.16.4",
+        "mongoose": "^5.4.6"
+    }
+}
