@@ -1,5 +1,6 @@
 const app = require('express').Router();
 const session = require('cookie-session');
+const mongoose = require('mongoose');
 
 // --- middleware
 // - body-parser needed to catch and to treat information inside req.body
@@ -12,7 +13,7 @@ app.use(session({secret: 'todotopsecret'}))
 require('../models/Prof');
 
 lienErreur = '/error';
-lienAll = '/profs/';
+lienAll = '/profs';
 lienAjouter = '/profs';
 lienModifier = '/profs';
 lienSupprimer = '/profs/:id';
