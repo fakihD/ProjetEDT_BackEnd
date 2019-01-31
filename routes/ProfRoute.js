@@ -1,6 +1,5 @@
-express = require('express'),
-app = express();
-session = require('cookie-session');
+const app = require('express').Router();
+const session = require('cookie-session');
 
 // --- middleware
 // - body-parser needed to catch and to treat information inside req.body
@@ -81,3 +80,5 @@ app.get(lienGet, function (req, res) {
         res.redirect(lienErreur);
     });
 });
+
+module.exports = app;
