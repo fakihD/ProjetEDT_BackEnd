@@ -4,10 +4,8 @@ const mongoose 	= require('mongoose'),
 
 //------------------------------------------- Resources Schema
 let PromoSchema = new Schema({
-
      nom : String,
-     alias : String
-     
+     alias : String     
 });
 
 let Promo = mongoose.model('Promo', PromoSchema);
