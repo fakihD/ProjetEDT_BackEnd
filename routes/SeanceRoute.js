@@ -10,37 +10,38 @@ app.use(bodyParser.urlencoded({extended : true}));
 app.use(session({secret: 'todotopsecret'}))
 
 // -- Load model needed for the project
-require('../models/Eleve');
+require('../models/Seance');
 
 lienErreur = '/error';
-lienAll = '/eleves/';
-lienAjouter = '/eleves';
-lienModifier = '/eleves';
-lienSupprimer = '/eleves/:id';
-lienGet = '/eleves/:id';
+lienAll = '/seances/';
+lienAjouter = '/seances';
+lienModifier = '/seances';
+lienSupprimer = '/seances/:id';
+lienGet = '/seances/:id';
 
 pageErreur ='';
-pageEleves = '';
-pageEleve = '';
+pageSeances = '';
+pageSeance = '';
 
 // -- ERROR
 app.get(lienErreur, function(req, res) {
     res.render(pageErreur);
 })
+
 // -- FIND ALL
 app.get(lienAll, function (req, res) {
-    let Eleve = mongoose.model('Eleve');
-    Eleve.find().then((eleves)=>{
-        res.render(pageEleves, eleves);
+    let Seance = mongoose.model('Seance');
+    Seance.find().then((seances)=>{
+        res.render(pageSeances, seances);
     })
 });
 // -- CREATE
 app.post(lienAjouter, function (req, res) {
-    let Eleve = mongoose.model('Eleve');
-    let newEleve = new Eleve(req.body);
-    newEleve.id = newEleve._id;
+    let Seance = mongoose.model('Seance');
+    let newSeance = new Seance(req.body);
+    newSeance.id = newSeance._id;
 
-    newEleve.save().then(()=>{
+    newSeance.save().then(()=>{
         res.redirect(lienAll);
     },(err)=>{
         res.redirect(lienErreur);
@@ -49,7 +50,7 @@ app.post(lienAjouter, function (req, res) {
 
 // -- UPDATE
 app.put(lienModifier, function (req, res) {
-    mongoose.model('Eleve').updateOne({id : req.body.id}, {$set : req.body}, (err, updatedEleve)=>{
+    mongoose.model('Seance').updateOne({id : req.body.id}, {$set : req.body}, (err, updatedSeance)=>{
        if(err){
             res.redirect(lienErreur);
        }else{
@@ -60,8 +61,8 @@ app.put(lienModifier, function (req, res) {
 
 // -- DELETE
 app.delete(lienSupprimer, function (req, res) {
-    let Eleve = mongoose.model('Eleve');
-    Eleve.find({id : req.params.id}).deleteOne().then(()=>{
+    let Seance = mongoose.model('Seance');
+    Seance.find({id : req.params.id}).deleteOne().then(()=>{
         res.redirect(lienAll);
     },(err)=>{
         res.redirect(lienErreur);
@@ -70,9 +71,9 @@ app.delete(lienSupprimer, function (req, res) {
 
 // -- READ
 app.get(lienGet, function (req, res) {
-    mongoose.model('Eleve').findOne({id : req.params.id}).then((eleve)=>{
-        if(eleve){
-            res.render(pageEleve, eleve);
+    mongoose.model('Seance').findOne({id : req.params.id}).then((seance)=>{
+        if(seance){
+            res.render(pageSeance, seance);
         }else{
             res.status(404).json({message : "Inexistant"});
         }

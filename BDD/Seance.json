@@ -1,1 +1,0 @@
-{"_id":{"$oid":"5c49cacbc8374d97d30b1b79"},"type":"TD","heureDebut":"8:30","heureFin":"10:00","date":"24/01/2019","salle":{"libelle":"113"},"eleve":[{"nom":"Boisne","prenom":"Alexis"},{"nom":"Bertoux","prenom":"Jeanne"}],"promo":{"nom":"Master 1 MIAGE Alternance","alias":"M1MIAA"},"prof":{"nom":"Blin","prenom":"Leia"},"matiere":{"nom":"Base de donnee approfondie","alias":"BADA"}}
