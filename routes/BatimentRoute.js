@@ -10,18 +10,18 @@ app.use(bodyParser.urlencoded({extended : true}));
 app.use(session({secret: 'todotopsecret'}))
 
 // -- Load model needed for the project
-require('../models/Prof');
+require('../models/Batiment');
 
 lienErreur = '/error';
-lienAll = '/profs/';
-lienAjouter = '/profs';
-lienModifier = '/profs';
-lienSupprimer = '/profs/:id';
-lienGet = '/profs/:id';
+lienAll = '/batiments/';
+lienAjouter = '/batiments';
+lienModifier = '/batiments';
+lienSupprimer = '/batiments/:id';
+lienGet = '/batiments/:id';
 
 pageErreur ='';
-pageProfs = '';
-pageProf = '';
+pageBatiments = '';
+pageBatiment = '';
 
 // -- ERROR
 app.get(lienErreur, function(req, res) {
@@ -30,18 +30,18 @@ app.get(lienErreur, function(req, res) {
 
 // -- FIND ALL
 app.get(lienAll, function (req, res) {
-    let Prof = mongoose.model('Prof');
-    Prof.find().then((profs)=>{
-        res.render(pageProfs, profs);
+    let Batiment = mongoose.model('Batiment');
+    Batiment.find().then((batiments)=>{
+        res.render(pageBatiments, batiments);
     })
 });
 // -- CREATE
 app.post(lienAjouter, function (req, res) {
-    let Prof = mongoose.model('Prof');
-    let newProf = new Prof(req.body);
-    newProf.id = newProf._id;
+    let Batiment = mongoose.model('Batiment');
+    let newBatiment = new Batiment(req.body);
+    newBatiment.id = newBatiment._id;
 
-    newProf.save().then(()=>{
+    newBatiment.save().then(()=>{
         res.redirect(lienAll);
     },(err)=>{
         res.redirect(lienErreur);
@@ -50,7 +50,7 @@ app.post(lienAjouter, function (req, res) {
 
 // -- UPDATE
 app.put(lienModifier, function (req, res) {
-    mongoose.model('Prof').updateOne({id : req.body.id}, {$set : req.body}, (err, updatedProf)=>{
+    mongoose.model('Batiment').updateOne({id : req.body.id}, {$set : req.body}, (err, updatedBatiment)=>{
        if(err){
             res.redirect(lienErreur);
        }else{
@@ -61,8 +61,8 @@ app.put(lienModifier, function (req, res) {
 
 // -- DELETE
 app.delete(lienSupprimer, function (req, res) {
-    let Prof = mongoose.model('Prof');
-    Prof.find({id : req.params.id}).deleteOne().then(()=>{
+    let Batiment = mongoose.model('Batiment');
+    Batiment.find({id : req.params.id}).deleteOne().then(()=>{
         res.redirect(lienAll);
     },(err)=>{
         res.redirect(lienErreur);
@@ -71,9 +71,9 @@ app.delete(lienSupprimer, function (req, res) {
 
 // -- READ
 app.get(lienGet, function (req, res) {
-    mongoose.model('Prof').findOne({id : req.params.id}).then((prof)=>{
-        if(prof){
-            res.render(pageProf, prof);
+    mongoose.model('Batiment').findOne({id : req.params.id}).then((batiment)=>{
+        if(batiment){
+            res.render(pageBatiment, batiment);
         }else{
             res.status(404).json({message : "Inexistant"});
         }

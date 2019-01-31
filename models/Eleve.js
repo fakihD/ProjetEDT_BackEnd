@@ -3,7 +3,7 @@ const mongoose 	= require('mongoose'),
     Schema	 	= mongoose.Schema;
 
 //------------------------------------------- Resources Schema
-let ProfSchema = new Schema({
+let EleveSchema = new Schema({
     nom : String,
     prenom : String,
     alias : String,
@@ -13,17 +13,10 @@ let ProfSchema = new Schema({
             alias : String
         }
 
-    ],
-
-    matiere : [
-        {
-            nom : String,
-            alias : String
-        }
-
     ]
+    
 });
 
-let Prof = mongoose.model('Prof', ProfSchema);
+let Eleve = mongoose.model('Eleve', EleveSchema);
 
-module.exports = Prof;
+module.exports = Eleve;

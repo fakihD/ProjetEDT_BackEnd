@@ -4,9 +4,10 @@ const mongoose 	= require('mongoose'),
 
 //------------------------------------------- Resources Schema
 let PromoSchema = new Schema({
-    id : Number,
-    nom : String,
-    alias : String
+     nom : String,
+     alias : String     
 });
 
-mongoose.model('Promo', PromoSchema);
+let Promo = mongoose.model('Promo', PromoSchema);
+
+module.exports = Promo;
