@@ -81,3 +81,5 @@ app.get(lienGet, function (req, res) {
         res.redirect(lienErreur);
     });
 });
+
+module.exports = app;
