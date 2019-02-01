@@ -13,11 +13,11 @@ app.use(session({secret: 'todotopsecret'}))
 require('../models/Batiment');
 
 lienErreur = '/error';
-lienAll = '/batiments/';
-lienAjouter = '/batiments/add';
-lienModifier = '/batiments/update/:id';
-lienSupprimer = '/batiments/delete/:id';
-lienGet = '/batiments/get/:id';
+lienAll = '/';
+lienAjouter = '/add';
+lienModifier = '/update/:id';
+lienSupprimer = '/delete/:id';
+lienGet = '/get/:id';
 
 pageErreur ='';
 pageBatiments = '';

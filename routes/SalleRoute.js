@@ -13,11 +13,11 @@ app.use(session({secret: 'todotopsecret'}))
 require('../models/Salle');
 
 let lienErreur = '/error';
-let lienFindAll = '/salles';
-let lienAjouter = '/salles/add';
-let lienModifier = '/salles/update/:id';
-let lienSupprimer = '/salles/delete/:id';
-let lienGet = '/salles/get/:id';
+let lienFindAll = '/';
+let lienAjouter = '/add';
+let lienModifier = '/update/:id';
+let lienSupprimer = '/delete/:id';
+let lienGet = '/get/:id';
 
 let pageErreur ='';
 let pageSalle = '';

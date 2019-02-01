@@ -13,11 +13,11 @@ app.use(session({secret: 'todotopsecret'}))
 require('../models/Matiere');
 
 lienErreur = '/error';
-lienAll = '/matieres/';
-lienAjouter = '/matieres/add';
-lienModifier = '/matieres/update/:id';
-lienSupprimer = '/matieres/delete/:id';
-lienGet = '/matieres/get/:id';
+lienAll = '/';
+lienAjouter = '/add';
+lienModifier = '/update/:id';
+lienSupprimer = '/delete/:id';
+lienGet = '/get/:id';
 
 pageErreur ='';
 pageMatieres = '';

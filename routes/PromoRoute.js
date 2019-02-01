@@ -13,11 +13,11 @@ app.use(session({secret: 'todotopsecret'}))
 require('../models/Promo');
 
 let lienErreur = '/error';
-let lienFindAll = '/promos';
-let lienAjouter = '/promos/add';
-let lienModifier = '/promos/update/:id';
-let lienSupprimer = '/promos/delete/:id';
-let lienGet = '/promos/get/:id';
+let lienFindAll = '/';
+let lienAjouter = '/add';
+let lienModifier = '/update/:id';
+let lienSupprimer = '/delete/:id';
+let lienGet = '/get/:id';
 
 let pageErreur ='';
 let pagePromo = '';
