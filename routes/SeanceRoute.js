@@ -81,5 +81,5 @@ app.get(lienGet, function (req, res) {
         res.redirect(lienErreur);
     });
 });
-Fin de la discussion
-Écrivez un message...
+
+module.exports = app;
