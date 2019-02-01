@@ -14,10 +14,10 @@ require('../models/Promo');
 
 let lienErreur = '/error';
 let lienFindAll = '/promos';
-let lienAjouter = '/promos';
-let lienModifier = '/promos/:id';
-let lienSupprimer = '/promos/:id';
-let lienGet = '/promos/:id';
+let lienAjouter = '/promos/add';
+let lienModifier = '/promos/update/:id';
+let lienSupprimer = '/promos/delete/:id';
+let lienGet = '/promos/get/:id';
 
 let pageErreur ='';
 let pagePromo = '';
@@ -49,7 +49,7 @@ app.post(lienAjouter, function (req, res) {
 
 // -- UPDATE
 app.put(lienModifier, function (req, res) {
-    mongoose.model('Promo').updateOne({id : req.body.id}, {$set : req.body}, (err, updatedPromo)=>{
+    mongoose.model('Promo').updateOne({id : req.params.id}, {$set : req.body}, (err, updatedPromo)=>{
        if(err){
             res.redirect(lienErreur);
        }else{

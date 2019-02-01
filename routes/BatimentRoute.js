@@ -14,10 +14,10 @@ require('../models/Batiment');
 
 lienErreur = '/error';
 lienAll = '/batiments/';
-lienAjouter = '/batiments';
-lienModifier = '/batiments';
-lienSupprimer = '/batiments/:id';
-lienGet = '/batiments/:id';
+lienAjouter = '/batiments/add';
+lienModifier = '/batiments/update/:id';
+lienSupprimer = '/batiments/delete/:id';
+lienGet = '/batiments/get/:id';
 
 pageErreur ='';
 pageBatiments = '';
@@ -50,7 +50,7 @@ app.post(lienAjouter, function (req, res) {
 
 // -- UPDATE
 app.put(lienModifier, function (req, res) {
-    mongoose.model('Batiment').updateOne({id : req.body.id}, {$set : req.body}, (err, updatedBatiment)=>{
+    mongoose.model('Batiment').updateOne({id : req.params.id}, {$set : req.body}, (err, updatedBatiment)=>{
        if(err){
             res.redirect(lienErreur);
        }else{
