@@ -14,10 +14,10 @@ require('../models/Salle');
 
 let lienErreur = '/error';
 let lienFindAll = '/salles';
-let lienAjouter = '/salles';
-let lienModifier = '/salles/:id';
-let lienSupprimer = '/salles/:id';
-let lienGet = '/salles/:id';
+let lienAjouter = '/salles/add';
+let lienModifier = '/salles/update/:id';
+let lienSupprimer = '/salles/delete/:id';
+let lienGet = '/salles/get/:id';
 
 let pageErreur ='';
 let pageSalle = '';
@@ -49,7 +49,7 @@ app.post(lienAjouter, function (req, res) {
 
 // -- UPDATE
 app.put(lienModifier, function (req, res) {
-    mongoose.model('Salle').updateOne({id : req.body.id}, {$set : req.body}, (err, updatedSalle)=>{
+    mongoose.model('Salle').updateOne({id : req.params.id}, {$set : req.body}, (err, updatedSalle)=>{
        if(err){
             res.redirect(lienErreur);
        }else{

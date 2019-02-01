@@ -14,10 +14,10 @@ require('../models/Seance');
 
 lienErreur = '/error';
 lienAll = '/seances/';
-lienAjouter = '/seances';
-lienModifier = '/seances';
-lienSupprimer = '/seances/:id';
-lienGet = '/seances/:id';
+lienAjouter = '/seances/add';
+lienModifier = '/seances/update/:id';
+lienSupprimer = '/seances/delete/:id';
+lienGet = '/seances/get/:id';
 
 pageErreur ='';
 pageSeances = '';
@@ -50,7 +50,7 @@ app.post(lienAjouter, function (req, res) {
 
 // -- UPDATE
 app.put(lienModifier, function (req, res) {
-    mongoose.model('Seance').updateOne({id : req.body.id}, {$set : req.body}, (err, updatedSeance)=>{
+    mongoose.model('Seance').updateOne({id : req.params.id}, {$set : req.body}, (err, updatedSeance)=>{
        if(err){
             res.redirect(lienErreur);
        }else{

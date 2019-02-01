@@ -14,10 +14,10 @@ require('../models/Matiere');
 
 lienErreur = '/error';
 lienAll = '/matieres/';
-lienAjouter = '/matieres';
-lienModifier = '/matieres';
-lienSupprimer = '/matieres/:id';
-lienGet = '/matieres/:id';
+lienAjouter = '/matieres/add';
+lienModifier = '/matieres/update/:id';
+lienSupprimer = '/matieres/delete/:id';
+lienGet = '/matieres/get/:id';
 
 pageErreur ='';
 pageMatieres = '';
@@ -50,7 +50,7 @@ app.post(lienAjouter, function (req, res) {
 
 // -- UPDATE
 app.put(lienModifier, function (req, res) {
-    mongoose.model('Matiere').updateOne({id : req.body.id}, {$set : req.body}, (err, updatedMatiere)=>{
+    mongoose.model('Matiere').updateOne({id : req.params.id}, {$set : req.body}, (err, updatedMatiere)=>{
        if(err){
             res.redirect(lienErreur);
        }else{
