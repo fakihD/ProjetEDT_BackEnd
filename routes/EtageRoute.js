@@ -14,10 +14,10 @@ require('../models/Etage');
 
 let lienErreur = '/error';
 let lienFindAll = '/etages';
-let lienAjouter = '/etages';
-let lienModifier = '/etages/:id';
-let lienSupprimer = '/etages/:id';
-let lienGet = '/etages/:id';
+let lienAjouter = '/etages/add';
+let lienModifier = '/etages/update/:id';
+let lienSupprimer = '/etages/delete/:id';
+let lienGet = '/etages/get/:id';
 
 let pageErreur ='';
 let pageEtage = '';
@@ -49,7 +49,7 @@ app.post(lienAjouter, function (req, res) {
 
 // -- UPDATE
 app.put(lienModifier, function (req, res) {
-    mongoose.model('Etage').updateOne({id : req.body.id}, {$set : req.body}, (err, updatedEtage)=>{
+    mongoose.model('Etage').updateOne({id : req.params.id}, {$set : req.body}, (err, updatedEtage)=>{
        if(err){
             res.redirect(lienErreur);
        }else{
@@ -80,3 +80,5 @@ app.get(lienGet, function (req, res) {
         res.redirect(lienErreur);
     });
 });
+
+module.exports = app;

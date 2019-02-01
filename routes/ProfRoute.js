@@ -1,5 +1,6 @@
 const app = require('express').Router();
 const session = require('cookie-session');
+const mongoose = require('mongoose');
 
 // --- middleware
 // - body-parser needed to catch and to treat information inside req.body
@@ -12,11 +13,11 @@ app.use(session({secret: 'todotopsecret'}))
 require('../models/Prof');
 
 lienErreur = '/error';
-lienAll = '/profs/';
-lienAjouter = '/profs';
-lienModifier = '/profs';
-lienSupprimer = '/profs/:id';
-lienGet = '/profs/:id';
+lienAll = '/profs';
+lienAjouter = '/profs/add';
+lienModifier = '/profs/update:id';
+lienSupprimer = '/profs/delete/:id';
+lienGet = '/profs/get/:id';
 
 pageErreur ='';
 pageProfs = '';
@@ -49,7 +50,7 @@ app.post(lienAjouter, function (req, res) {
 
 // -- UPDATE
 app.put(lienModifier, function (req, res) {
-    mongoose.model('Prof').updateOne({id : req.body.id}, {$set : req.body}, (err, updatedProf)=>{
+    mongoose.model('Prof').updateOne({id : req.params.id}, {$set : req.body}, (err, updatedProf)=>{
        if(err){
             res.redirect(lienErreur);
        }else{

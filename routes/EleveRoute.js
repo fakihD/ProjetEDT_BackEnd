@@ -14,10 +14,10 @@ require('../models/Eleve');
 
 lienErreur = '/error';
 lienAll = '/eleves/';
-lienAjouter = '/eleves';
-lienModifier = '/eleves';
-lienSupprimer = '/eleves/:id';
-lienGet = '/eleves/:id';
+lienAjouter = '/eleves/add';
+lienModifier = '/eleves/update/:id';
+lienSupprimer = '/eleves/delete/:id';
+lienGet = '/eleves/get/:id';
 
 pageErreur ='';
 pageEleves = '';
@@ -50,7 +50,7 @@ app.post(lienAjouter, function (req, res) {
 
 // -- UPDATE
 app.put(lienModifier, function (req, res) {
-    mongoose.model('Eleve').updateOne({id : req.body.id}, {$set : req.body}, (err, updatedEleve)=>{
+    mongoose.model('Eleve').updateOne({id : req.params.id}, {$set : req.body}, (err, updatedEleve)=>{
        if(err){
             res.redirect(lienErreur);
        }else{
@@ -81,3 +81,5 @@ app.get(lienGet, function (req, res) {
         res.redirect(lienErreur);
     });
 });
+
+module.exports = app;
