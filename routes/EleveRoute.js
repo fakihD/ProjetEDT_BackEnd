@@ -13,11 +13,11 @@ app.use(session({secret: 'todotopsecret'}))
 require('../models/Eleve');
 
 lienErreur = '/error';
-lienAll = '/eleves/';
-lienAjouter = '/eleves/add';
-lienModifier = '/eleves/update/:id';
-lienSupprimer = '/eleves/delete/:id';
-lienGet = '/eleves/get/:id';
+lienAll = '/';
+lienAjouter = '/add';
+lienModifier = '/update/:id';
+lienSupprimer = '/delete/:id';
+lienGet = '/get/:id';
 
 pageErreur ='';
 pageEleves = '';

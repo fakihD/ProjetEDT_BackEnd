@@ -13,11 +13,11 @@ app.use(session({secret: 'todotopsecret'}))
 require('../models/Etage');
 
 let lienErreur = '/error';
-let lienFindAll = '/etages';
-let lienAjouter = '/etages/add';
-let lienModifier = '/etages/update/:id';
-let lienSupprimer = '/etages/delete/:id';
-let lienGet = '/etages/get/:id';
+let lienFindAll = '/';
+let lienAjouter = '/add';
+let lienModifier = '/update/:id';
+let lienSupprimer = '/delete/:id';
+let lienGet = '/get/:id';
 
 let pageErreur ='';
 let pageEtage = '';

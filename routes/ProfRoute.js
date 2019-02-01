@@ -13,11 +13,11 @@ app.use(session({secret: 'todotopsecret'}))
 require('../models/Prof');
 
 lienErreur = '/error';
-lienAll = '/profs';
-lienAjouter = '/profs/add';
-lienModifier = '/profs/update:id';
-lienSupprimer = '/profs/delete/:id';
-lienGet = '/profs/get/:id';
+lienAll = '/';
+lienAjouter = '/add';
+lienModifier = '/update:id';
+lienSupprimer = '/delete/:id';
+lienGet = '/get/:id';
 
 pageErreur ='';
 pageProfs = '';

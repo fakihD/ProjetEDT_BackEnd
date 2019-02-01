@@ -13,11 +13,11 @@ app.use(session({secret: 'todotopsecret'}))
 require('../models/Seance');
 
 lienErreur = '/error';
-lienAll = '/seances/';
-lienAjouter = '/seances/add';
-lienModifier = '/seances/update/:id';
-lienSupprimer = '/seances/delete/:id';
-lienGet = '/seances/get/:id';
+lienAll = '/';
+lienAjouter = '/add';
+lienModifier = '/update/:id';
+lienSupprimer = '/delete/:id';
+lienGet = '/get/:id';
 
 pageErreur ='';
 pageSeances = '';
