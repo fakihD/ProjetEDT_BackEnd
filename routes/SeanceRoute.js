@@ -43,19 +43,19 @@ app.post(lienAjouter, function (req, res) {
     newSeance.id = newSeance._id;
 
     newSeance.save().then(()=>{
-        res.redirect(lienAll);
+        res.send(newSeance);
     },(err)=>{
-        res.redirect(lienErreur);
+        res.send(err);
     })
 });
 
 // -- UPDATE
 app.put(lienModifier, function (req, res) {
-    mongoose.model('Seance').updateOne({id : req.params.id}, {$set : req.body}, (err, updatedSeance)=>{
+    mongoose.model('Seance').updateOne({_id : req.params.id}, {$set : req.body}, (err, updatedSeance)=>{
        if(err){
-            res.redirect(lienErreur);
+            res.send(err);
        }else{
-            res.redirect(lienAll);
+            res.send(updatedSeance);
        }
     });
 });
@@ -63,23 +63,23 @@ app.put(lienModifier, function (req, res) {
 // -- DELETE
 app.delete(lienSupprimer, function (req, res) {
     let Seance = mongoose.model('Seance');
-    Seance.find({id : req.params.id}).deleteOne().then(()=>{
+    Seance.find({_id : req.params.id}).deleteOne().then(()=>{
         res.redirect(lienAll);
     },(err)=>{
-        res.redirect(lienErreur);
+        res.send(err);
     });
 });
 
 // -- READ
 app.get(lienGet, function (req, res) {
-    mongoose.model('Seance').findOne({id : req.params.id}).then((seance)=>{
+    mongoose.model('Seance').findOne({_id : req.params.id}).then((seance)=>{
         if(seance){
-            res.render(pageSeance, seance);
+            res.send(seance);
         }else{
             res.status(404).json({message : "Inexistant"});
         }
     },(err)=>{
-        res.redirect(lienErreur);
+        res.send(err);
     });
 });
 app.get(lienGetWeek, function (req, res) {

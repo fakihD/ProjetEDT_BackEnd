@@ -41,19 +41,19 @@ app.post(lienAjouter, function (req, res) {
     newSalle.id = newSalle._id;
 
     newSalle.save().then(()=>{
-        res.redirect(lienFindAll);
+        res.send(newSalle);
     },(err)=>{
-        res.redirect(lienErreur);
+        res.send(err);
     })
 });
 
 // -- UPDATE
 app.put(lienModifier, function (req, res) {
-    mongoose.model('Salle').updateOne({id : req.params.id}, {$set : req.body}, (err, updatedSalle)=>{
+    mongoose.model('Salle').updateOne({_id : req.params.id}, {$set : req.body}, (err, updatedSalle)=>{
        if(err){
-            res.redirect(lienErreur);
+            res.send(err);
        }else{
-            res.redirect(lienFindAll);
+            res.send(updatedSalle);
        }
     });
 });
@@ -61,23 +61,23 @@ app.put(lienModifier, function (req, res) {
 // -- DELETE
 app.delete(lienSupprimer, function (req, res) {
     let Salle = mongoose.model('Salle');
-    Salle.find({id : req.params.id}).deleteOne().then(()=>{
+    Salle.find({_id : req.params.id}).deleteOne().then(()=>{
         res.redirect(lienFindAll);
     },(err)=>{
-        res.redirect(lienErreur);
+        res.send(err);
     });
 });
 
 // -- READ
 app.get(lienGet, function (req, res) {
-    mongoose.model('Salle').findOne({id : req.params.id}).then((salle)=>{
+    mongoose.model('Salle').findOne({_id : req.params.id}).then((salle)=>{
         if(salle){
-            res.render(pageSalle, salle);
+            res.send(salle);
         }else{
             res.status(404).json({message : "Inexistant"});
         }
     },(err)=>{
-        res.redirect(lienErreur);
+        res.send(err);
     });
 });
 

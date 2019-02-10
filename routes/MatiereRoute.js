@@ -42,15 +42,15 @@ app.post(lienAjouter, function (req, res) {
     newMatiere.id = newMatiere._id;
 
     newMatiere.save().then(()=>{
-        res.redirect(lienAll);
+        res.send(newMatiere);
     },(err)=>{
-        res.redirect(lienErreur);
+        res.send(err);
     })
 });
 
 // -- UPDATE
 app.put(lienModifier, function (req, res) {
-    mongoose.model('Matiere').updateOne({id : req.params.id}, {$set : req.body}, (err, updatedMatiere)=>{
+    mongoose.model('Matiere').updateOne({_id : req.params.id}, {$set : req.body}, (err, updatedMatiere)=>{
        if(err){
             res.redirect(lienErreur);
        }else{
@@ -62,7 +62,7 @@ app.put(lienModifier, function (req, res) {
 // -- DELETE
 app.delete(lienSupprimer, function (req, res) {
     let Matiere = mongoose.model('Matiere');
-    Matiere.find({id : req.params.id}).deleteOne().then(()=>{
+    Matiere.find({_id : req.params.id}).deleteOne().then(()=>{
         res.redirect(lienAll);
     },(err)=>{
         res.redirect(lienErreur);
@@ -71,7 +71,7 @@ app.delete(lienSupprimer, function (req, res) {
 
 // -- READ
 app.get(lienGet, function (req, res) {
-    mongoose.model('Matiere').findOne({id : req.params.id}).then((matiere)=>{
+    mongoose.model('Matiere').findOne({_id : req.params.id}).then((matiere)=>{
         if(matiere){
             res.render(pageMatiere, matiere);
         }else{

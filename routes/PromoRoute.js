@@ -41,19 +41,19 @@ app.post(lienAjouter, function (req, res) {
     promo1.id = promo1._id;
 
     promo1.save().then(()=>{
-        res.redirect(lienFindAll);
+        res.send(promo1);
     },(err)=>{
-        res.redirect(lienErreur);
+        res.send(err);
     })
 });
 
 // -- UPDATE
 app.put(lienModifier, function (req, res) {
-    mongoose.model('Promo').updateOne({id : req.params.id}, {$set : req.body}, (err, updatedPromo)=>{
+    mongoose.model('Promo').updateOne({_id : req.params.id}, {$set : req.body}, (err, updatedPromo)=>{
        if(err){
-            res.redirect(lienErreur);
+            res.send(err);
        }else{
-            res.redirect(lienFindAll);
+            res.send(updatedPromo);
        }
     });
 });
@@ -61,18 +61,18 @@ app.put(lienModifier, function (req, res) {
 // -- DELETE
 app.delete(lienSupprimer, function (req, res) {
     let Promo = mongoose.model('Promo');
-    Promo.find({id : req.params.id}).deleteOne().then(()=>{
-        res.redirect(lienFindAll);
+    Promo.find({_id : req.params.id}).deleteOne().then(()=>{
+        res.render(lienFindAll);
     },(err)=>{
-        res.redirect(lienErreur);
+        res.send(err);
     });
 });
 
 // -- READ
 app.get(lienGet, function (req, res) {
-    mongoose.model('Promo').findOne({id : req.params.id}).then((promo)=>{
+    mongoose.model('Promo').findOne({_id : req.params.id}).then((promo)=>{
         if(promo){
-            res.render(pagePromo, promo);
+            res.send(promo);
         }else{
             res.status(404).json({message : "Inexistant"});
         }

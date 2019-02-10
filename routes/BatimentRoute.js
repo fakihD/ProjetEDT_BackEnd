@@ -42,19 +42,19 @@ app.post(lienAjouter, function (req, res) {
     newBatiment.id = newBatiment._id;
 
     newBatiment.save().then(()=>{
-        res.redirect(lienAll);
+        res.send(newBatiment);
     },(err)=>{
-        res.redirect(lienErreur);
+        res.send(err);
     })
 });
 
 // -- UPDATE
 app.put(lienModifier, function (req, res) {
-    mongoose.model('Batiment').updateOne({id : req.params.id}, {$set : req.body}, (err, updatedBatiment)=>{
+    mongoose.model('Batiment').updateOne({_id : req.params.id}, {$set : req.body}, (err, updatedBatiment)=>{
        if(err){
-            res.redirect(lienErreur);
+            res.send(err);
        }else{
-            res.redirect(lienAll);
+            res.send(updatedBatiment);
        }
     });
 });
@@ -62,7 +62,7 @@ app.put(lienModifier, function (req, res) {
 // -- DELETE
 app.delete(lienSupprimer, function (req, res) {
     let Batiment = mongoose.model('Batiment');
-    Batiment.find({id : req.params.id}).deleteOne().then(()=>{
+    Batiment.find({_id : req.params.id}).deleteOne().then(()=>{
         res.redirect(lienAll);
     },(err)=>{
         res.redirect(lienErreur);
@@ -71,9 +71,9 @@ app.delete(lienSupprimer, function (req, res) {
 
 // -- READ
 app.get(lienGet, function (req, res) {
-    mongoose.model('Batiment').findOne({id : req.params.id}).then((batiment)=>{
+    mongoose.model('Batiment').findOne({_id : req.params.id}).then((batiment)=>{
         if(batiment){
-            res.render(pageBatiment, batiment);
+            res.send(batiment);
         }else{
             res.status(404).json({message : "Inexistant"});
         }

@@ -15,7 +15,7 @@ require('../models/Prof');
 lienErreur = '/error';
 lienAll = '/';
 lienAjouter = '/add';
-lienModifier = '/update:id';
+lienModifier = '/update/:id';
 lienSupprimer = '/delete/:id';
 lienGet = '/get/:id';
 
@@ -41,20 +41,24 @@ app.post(lienAjouter, function (req, res) {
     let newProf = new Prof(req.body);
     newProf.id = newProf._id;
 
-    newProf.save().then(()=>{
-        res.redirect(lienAll);
+    newProf.save().then((profs)=>{
+        res.send(profs);
     },(err)=>{
-        res.redirect(lienErreur);
+        res.send(err);
     })
 });
 
 // -- UPDATE
 app.put(lienModifier, function (req, res) {
-    mongoose.model('Prof').updateOne({id : req.params.id}, {$set : req.body}, (err, updatedProf)=>{
+    mongoose.model('Prof').updateOne({_id : req.params.id}, {$set : req.body}, (err, updatedProf)=>{
        if(err){
-            res.redirect(lienErreur);
+            res.send(err);
+            console.log(req.params.id);
+            console.log(req.body);
        }else{
-            res.redirect(lienAll);
+            res.send(updatedProf);
+            console.log(req.params.id);
+            console.log(req.body);
        }
     });
 });
@@ -62,7 +66,7 @@ app.put(lienModifier, function (req, res) {
 // -- DELETE
 app.delete(lienSupprimer, function (req, res) {
     let Prof = mongoose.model('Prof');
-    Prof.find({id : req.params.id}).deleteOne().then(()=>{
+    Prof.find({_id : req.params.id}).deleteOne().then(()=>{
         res.redirect(lienAll);
     },(err)=>{
         res.redirect(lienErreur);
@@ -71,7 +75,7 @@ app.delete(lienSupprimer, function (req, res) {
 
 // -- READ
 app.get(lienGet, function (req, res) {
-    mongoose.model('Prof').findOne({id : req.params.id}).then((prof)=>{
+    mongoose.model('Prof').findOne({_id : req.params.id}).then((prof)=>{
         if(prof){
             res.send(prof);
         }else{

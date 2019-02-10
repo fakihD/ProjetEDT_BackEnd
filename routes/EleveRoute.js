@@ -42,15 +42,15 @@ app.post(lienAjouter, function (req, res) {
     newEleve.id = newEleve._id;
 
     newEleve.save().then(()=>{
-        res.redirect(lienAll);
+        res.send(newEleve);
     },(err)=>{
-        res.redirect(lienErreur);
+        res.send(err);
     })
 });
 
 // -- UPDATE
 app.put(lienModifier, function (req, res) {
-    mongoose.model('Eleve').updateOne({id : req.params.id}, {$set : req.body}, (err, updatedEleve)=>{
+    mongoose.model('Eleve').updateOne({_id : req.params.id}, {$set : req.body}, (err, updatedEleve)=>{
        if(err){
             res.redirect(lienErreur);
        }else{
@@ -62,7 +62,7 @@ app.put(lienModifier, function (req, res) {
 // -- DELETE
 app.delete(lienSupprimer, function (req, res) {
     let Eleve = mongoose.model('Eleve');
-    Eleve.find({id : req.params.id}).deleteOne().then(()=>{
+    Eleve.find({_id : req.params.id}).deleteOne().then(()=>{
         res.redirect(lienAll);
     },(err)=>{
         res.redirect(lienErreur);
@@ -71,7 +71,7 @@ app.delete(lienSupprimer, function (req, res) {
 
 // -- READ
 app.get(lienGet, function (req, res) {
-    mongoose.model('Eleve').findOne({id : req.params.id}).then((eleve)=>{
+    mongoose.model('Eleve').findOne({_id : req.params.id}).then((eleve)=>{
         if(eleve){
             res.render(pageEleve, eleve);
         }else{
