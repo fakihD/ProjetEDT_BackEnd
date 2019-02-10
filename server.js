@@ -30,6 +30,7 @@ app.use(function (req, res, next) {
     next();
 });
 
+// ---- Define routes
 app.use('/profs',require('./routes/ProfRoute'));
 app.use('/batiments',require('./routes/BatimentRoute'));
 app.use('/eleves',require('./routes/EleveRoute'));
@@ -38,6 +39,5 @@ app.use('/promos',require('./routes/PromoRoute'));
 app.use('/salles',require('./routes/SalleRoute'));
 app.use('/seances',require('./routes/SeanceRoute'));
 
-
 app.listen(3010);
-console.log("C'est en marche !");
+console.log("Server started. Connect to http://localhost:3010/");

@@ -1,6 +1,6 @@
-express = require('express'),
-app = express();
-session = require('cookie-session');
+const app = require('express').Router();
+const session = require('cookie-session');
+const mongoose = require('mongoose');
 
 // --- middleware
 // - body-parser needed to catch and to treat information inside req.body
@@ -31,7 +31,7 @@ app.get(lienErreur, function(req, res) {
 app.get(lienFindAll, function (req, res) {
     let Salle = mongoose.model('Salle');
     Salle.find().then((salles)=>{
-        res.render(pageSalle, salles);
+        res.send(salles);
     })
 });
 // -- CREATE

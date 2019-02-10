@@ -32,7 +32,7 @@ app.get(lienErreur, function(req, res) {
 app.get(lienAll, function (req, res) {
     let Prof = mongoose.model('Prof');
     Prof.find().then((profs)=>{
-        res.render(pageProfs, profs);
+        res.send(profs);
     })
 });
 // -- CREATE
@@ -73,7 +73,7 @@ app.delete(lienSupprimer, function (req, res) {
 app.get(lienGet, function (req, res) {
     mongoose.model('Prof').findOne({id : req.params.id}).then((prof)=>{
         if(prof){
-            res.render(pageProf, prof);
+            res.send(prof);
         }else{
             res.status(404).json({message : "Inexistant"});
         }
