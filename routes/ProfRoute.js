@@ -1,13 +1,14 @@
-const app = require('express').Router();
-const session = require('cookie-session');
-const mongoose = require('mongoose');
+express = require('express');
+mongoose = require('mongoose');
+bodyParser = require('body-parser');
+
+ObjectId = mongoose.Types.ObjectId;
+app = express();
 
 // --- middleware
 // - body-parser needed to catch and to treat information inside req.body
-let bodyParser = require('body-parser');
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended : true}));
-app.use(session({secret: 'todotopsecret'}))
 
 // -- Load model needed for the project
 require('../models/Prof');
@@ -15,7 +16,7 @@ require('../models/Prof');
 lienErreur = '/error';
 lienAll = '/';
 lienAjouter = '/add';
-lienModifier = '/update:id';
+lienModifier = '/update/:id';
 lienSupprimer = '/delete/:id';
 lienGet = '/get/:id';
 
@@ -30,16 +31,18 @@ app.get(lienErreur, function(req, res) {
 
 // -- FIND ALL
 app.get(lienAll, function (req, res) {
-    let Prof = mongoose.model('Prof');
+    Prof = mongoose.model('Prof');
     Prof.find().then((profs)=>{
         res.render(pageProfs, profs);
+    },(err)=>{
+        res.redirect(lienErreur);
     })
 });
 // -- CREATE
 app.post(lienAjouter, function (req, res) {
-    let Prof = mongoose.model('Prof');
-    let newProf = new Prof(req.body);
-    newProf.id = newProf._id;
+    Prof = mongoose.model('Prof');
+
+    newProf = new Prof({nom:req.body.nom, prenom:req.body.prenom, alias:req.body.alias, promo:req.body.promo, matiere:req.body.matiere});
 
     newProf.save().then(()=>{
         res.redirect(lienAll);
@@ -62,7 +65,7 @@ app.put(lienModifier, function (req, res) {
 // -- DELETE
 app.delete(lienSupprimer, function (req, res) {
     let Prof = mongoose.model('Prof');
-    Prof.find({id : req.params.id}).deleteOne().then(()=>{
+    Prof.find({_id : new ObjectId(req.params.id)}).deleteOne().then(()=>{
         res.redirect(lienAll);
     },(err)=>{
         res.redirect(lienErreur);
@@ -71,7 +74,7 @@ app.delete(lienSupprimer, function (req, res) {
 
 // -- READ
 app.get(lienGet, function (req, res) {
-    mongoose.model('Prof').findOne({id : req.params.id}).then((prof)=>{
+    mongoose.model('Prof').findOne({_id : new ObjectId(req.params.id)}).then((prof)=>{
         if(prof){
             res.render(pageProf, prof);
         }else{

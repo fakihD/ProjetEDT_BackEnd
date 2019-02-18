@@ -1,13 +1,14 @@
-express = require('express'),
+express = require('express');
+mongoose = require('mongoose');
+bodyParser = require('body-parser');
+
+ObjectId = mongoose.Types.ObjectId;
 app = express();
-session = require('cookie-session');
 
 // --- middleware
 // - body-parser needed to catch and to treat information inside req.body
-let bodyParser = require('body-parser');
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended : true}));
-app.use(session({secret: 'todotopsecret'}))
 
 // -- Load model needed for the project
 require('../models/Eleve');
@@ -30,16 +31,18 @@ app.get(lienErreur, function(req, res) {
 
 // -- FIND ALL
 app.get(lienAll, function (req, res) {
-    let Eleve = mongoose.model('Eleve');
+    Eleve = mongoose.model('Eleve');
     Eleve.find().then((eleves)=>{
         res.render(pageEleves, eleves);
+    },(err)=>{
+        res.redirect(lienErreur);
     })
 });
 // -- CREATE
 app.post(lienAjouter, function (req, res) {
-    let Eleve = mongoose.model('Eleve');
-    let newEleve = new Eleve(req.body);
-    newEleve.id = newEleve._id;
+    Eleve = mongoose.model('Eleve');
+
+    newEleve = new Eleve({nom:req.body.nom, prenom:req.body.prenom, alias:req.body.alias, promo:req.body.promo});
 
     newEleve.save().then(()=>{
         res.redirect(lienAll);
@@ -62,7 +65,7 @@ app.put(lienModifier, function (req, res) {
 // -- DELETE
 app.delete(lienSupprimer, function (req, res) {
     let Eleve = mongoose.model('Eleve');
-    Eleve.find({id : req.params.id}).deleteOne().then(()=>{
+    Eleve.find({_id : new ObjectId(req.params.id)}).deleteOne().then(()=>{
         res.redirect(lienAll);
     },(err)=>{
         res.redirect(lienErreur);
@@ -71,7 +74,7 @@ app.delete(lienSupprimer, function (req, res) {
 
 // -- READ
 app.get(lienGet, function (req, res) {
-    mongoose.model('Eleve').findOne({id : req.params.id}).then((eleve)=>{
+    mongoose.model('Eleve').findOne({_id : new ObjectId(req.params.id)}).then((eleve)=>{
         if(eleve){
             res.render(pageEleve, eleve);
         }else{
