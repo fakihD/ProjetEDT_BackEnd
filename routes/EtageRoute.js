@@ -1,47 +1,50 @@
-express = require('express'),
+express = require('express');
+mongoose = require('mongoose');
+bodyParser = require('body-parser');
+
+ObjectId = mongoose.Types.ObjectId;
 app = express();
-session = require('cookie-session');
 
 // --- middleware
 // - body-parser needed to catch and to treat information inside req.body
-let bodyParser = require('body-parser');
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended : true}));
-app.use(session({secret: 'todotopsecret'}))
 
 // -- Load model needed for the project
 require('../models/Etage');
 
-let lienErreur = '/error';
-let lienFindAll = '/';
-let lienAjouter = '/add';
-let lienModifier = '/update/:id';
-let lienSupprimer = '/delete/:id';
-let lienGet = '/get/:id';
+lienErreur = '/error';
+lienAll = '/';
+lienAjouter = '/add';
+lienModifier = '/update/:id';
+lienSupprimer = '/delete/:id';
+lienGet = '/get/:id';
 
-let pageErreur ='';
-let pageEtage = '';
+pageErreur ='';
+pageEtages = '';
+pageEtage = '';
 
 // -- ERROR
 app.get(lienErreur, function(req, res) {
-    console.log("error");
+    res.render(pageErreur);
 })
 
 // -- FIND ALL
-app.get(lienFindAll, function (req, res) {
-    let Etage = mongoose.model('Etage');
+app.get(lienAll, function (req, res) {
+    Etage = mongoose.model('Etage');
     Etage.find().then((etages)=>{
-        res.render(pageEtage, etages);
+        res.render(pageEtages, etages);
+    },(err)=>{
+        res.redirect(lienErreur);
     })
 });
 // -- CREATE
 app.post(lienAjouter, function (req, res) {
-    let etage = mongoose.model('Etage');
-    let newEtage = new Etage(req.body);
-    newEtage.id = newEtage._id;
+    Etage = mongoose.model('Etage');
+    newEtage = new Etage({});
 
     newEtage.save().then(()=>{
-        res.redirect(lienFindAll);
+        res.redirect(lienAll);
     },(err)=>{
         res.redirect(lienErreur);
     })
@@ -53,7 +56,7 @@ app.put(lienModifier, function (req, res) {
        if(err){
             res.redirect(lienErreur);
        }else{
-            res.redirect(lienFindAll);
+            res.redirect(lienAll);
        }
     });
 });
@@ -61,8 +64,8 @@ app.put(lienModifier, function (req, res) {
 // -- DELETE
 app.delete(lienSupprimer, function (req, res) {
     let Etage = mongoose.model('Etage');
-    Etage.find({id : req.params.id}).deleteOne().then(()=>{
-        res.redirect(lienFindAll);
+    Etage.find({_id : new ObjectId(req.params.id)}).deleteOne().then(()=>{
+        res.redirect(lienAll);
     },(err)=>{
         res.redirect(lienErreur);
     });
@@ -70,7 +73,7 @@ app.delete(lienSupprimer, function (req, res) {
 
 // -- READ
 app.get(lienGet, function (req, res) {
-    mongoose.model('Etage').findOne({id : req.params.id}).then((etage)=>{
+    mongoose.model('Etage').findOne({_id : new ObjectId(req.params.id)}).then((etage)=>{
         if(etage){
             res.render(pageEtage, etage);
         }else{

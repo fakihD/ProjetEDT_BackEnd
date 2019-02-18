@@ -1,13 +1,14 @@
-express = require('express'),
+express = require('express');
+mongoose = require('mongoose');
+bodyParser = require('body-parser');
+
+ObjectId = mongoose.Types.ObjectId;
 app = express();
-session = require('cookie-session');
 
 // --- middleware
 // - body-parser needed to catch and to treat information inside req.body
-let bodyParser = require('body-parser');
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended : true}));
-app.use(session({secret: 'todotopsecret'}))
 
 // -- Load model needed for the project
 require('../models/Matiere');
@@ -30,16 +31,18 @@ app.get(lienErreur, function(req, res) {
 
 // -- FIND ALL
 app.get(lienAll, function (req, res) {
-    let Matiere = mongoose.model('Matiere');
+    Matiere = mongoose.model('Matiere');
     Matiere.find().then((matieres)=>{
         res.render(pageMatieres, matieres);
+    },(err)=>{
+        res.redirect(lienErreur);
     })
 });
 // -- CREATE
 app.post(lienAjouter, function (req, res) {
-    let Matiere = mongoose.model('Matiere');
-    let newMatiere = new Matiere(req.body);
-    newMatiere.id = newMatiere._id;
+    Matiere = mongoose.model('Matiere');
+
+    newMatiere = new Matiere({nom:req.body.nom, alias:req.body.alias, prof:req.body.prof});
 
     newMatiere.save().then(()=>{
         res.redirect(lienAll);
@@ -62,7 +65,7 @@ app.put(lienModifier, function (req, res) {
 // -- DELETE
 app.delete(lienSupprimer, function (req, res) {
     let Matiere = mongoose.model('Matiere');
-    Matiere.find({id : req.params.id}).deleteOne().then(()=>{
+    Matiere.find({_id : new ObjectId(req.params.id)}).deleteOne().then(()=>{
         res.redirect(lienAll);
     },(err)=>{
         res.redirect(lienErreur);
@@ -71,7 +74,7 @@ app.delete(lienSupprimer, function (req, res) {
 
 // -- READ
 app.get(lienGet, function (req, res) {
-    mongoose.model('Matiere').findOne({id : req.params.id}).then((matiere)=>{
+    mongoose.model('Matiere').findOne({_id : new ObjectId(req.params.id)}).then((matiere)=>{
         if(matiere){
             res.render(pageMatiere, matiere);
         }else{

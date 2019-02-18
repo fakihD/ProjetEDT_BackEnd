@@ -1,13 +1,14 @@
-express = require('express'),
+express = require('express');
+mongoose = require('mongoose');
+bodyParser = require('body-parser');
+
+ObjectId = mongoose.Types.ObjectId;
 app = express();
-session = require('cookie-session');
 
 // --- middleware
 // - body-parser needed to catch and to treat information inside req.body
-let bodyParser = require('body-parser');
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended : true}));
-app.use(session({secret: 'todotopsecret'}))
 
 // -- Load model needed for the project
 require('../models/Seance');
@@ -31,16 +32,18 @@ app.get(lienErreur, function(req, res) {
 
 // -- FIND ALL
 app.get(lienAll, function (req, res) {
-    let Seance = mongoose.model('Seance');
+    Seance = mongoose.model('Seance');
     Seance.find().then((seances)=>{
         res.render(pageSeances, seances);
+    },(err)=>{
+        res.redirect(lienErreur);
     })
 });
 // -- CREATE
 app.post(lienAjouter, function (req, res) {
-    let Seance = mongoose.model('Seance');
-    let newSeance = new Seance(req.body);
-    newSeance.id = newSeance._id;
+    Seance = mongoose.model('Seance');
+
+    newSeance = new Seance({type:req.body.type, heureDebut:req.body.heureDebut, heureFin:req.body.heureFin, date:req.body.date, salle:req.body.salle, eleve:req.body.eleve, promo:req.body.promo, prof:req.body.prof, matiere:req.body.matiere});
 
     newSeance.save().then(()=>{
         res.redirect(lienAll);
@@ -63,7 +66,7 @@ app.put(lienModifier, function (req, res) {
 // -- DELETE
 app.delete(lienSupprimer, function (req, res) {
     let Seance = mongoose.model('Seance');
-    Seance.find({id : req.params.id}).deleteOne().then(()=>{
+    Seance.find({_id : new ObjectId(req.params.id)}).deleteOne().then(()=>{
         res.redirect(lienAll);
     },(err)=>{
         res.redirect(lienErreur);
@@ -72,7 +75,7 @@ app.delete(lienSupprimer, function (req, res) {
 
 // -- READ
 app.get(lienGet, function (req, res) {
-    mongoose.model('Seance').findOne({id : req.params.id}).then((seance)=>{
+    mongoose.model('Seance').findOne({_id : new ObjectId(req.params.id)}).then((seance)=>{
         if(seance){
             res.render(pageSeance, seance);
         }else{
@@ -82,6 +85,7 @@ app.get(lienGet, function (req, res) {
         res.redirect(lienErreur);
     });
 });
+
 app.get(lienGetWeek, function (req, res) {
     var week = DaysOfWeek(req.params.week, req.params.year);
     mongoose.model('Seance').find({date : { $in: week }}).then((seances)=>{

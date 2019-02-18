@@ -1,13 +1,14 @@
-express = require('express'),
+express = require('express');
+mongoose = require('mongoose');
+bodyParser = require('body-parser');
+
+ObjectId = mongoose.Types.ObjectId;
 app = express();
-session = require('cookie-session');
 
 // --- middleware
 // - body-parser needed to catch and to treat information inside req.body
-let bodyParser = require('body-parser');
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended : true}));
-app.use(session({secret: 'todotopsecret'}))
 
 // -- Load model needed for the project
 require('../models/Batiment');
@@ -30,16 +31,17 @@ app.get(lienErreur, function(req, res) {
 
 // -- FIND ALL
 app.get(lienAll, function (req, res) {
-    let Batiment = mongoose.model('Batiment');
+    Batiment = mongoose.model('Batiment');
     Batiment.find().then((batiments)=>{
         res.render(pageBatiments, batiments);
+    },(err)=>{
+        res.redirect(lienErreur);
     })
 });
 // -- CREATE
 app.post(lienAjouter, function (req, res) {
-    let Batiment = mongoose.model('Batiment');
-    let newBatiment = new Batiment(req.body);
-    newBatiment.id = newBatiment._id;
+    Batiment = mongoose.model('Batiment');
+    newBatiment = new Batiment({libelle:req.body.libelle, adresse:req.body.adresse, salle:req.body.salle});
 
     newBatiment.save().then(()=>{
         res.redirect(lienAll);
@@ -62,7 +64,7 @@ app.put(lienModifier, function (req, res) {
 // -- DELETE
 app.delete(lienSupprimer, function (req, res) {
     let Batiment = mongoose.model('Batiment');
-    Batiment.find({id : req.params.id}).deleteOne().then(()=>{
+    Batiment.find({_id : new ObjectId(req.params.id)}).deleteOne().then(()=>{
         res.redirect(lienAll);
     },(err)=>{
         res.redirect(lienErreur);
@@ -71,7 +73,7 @@ app.delete(lienSupprimer, function (req, res) {
 
 // -- READ
 app.get(lienGet, function (req, res) {
-    mongoose.model('Batiment').findOne({id : req.params.id}).then((batiment)=>{
+    mongoose.model('Batiment').findOne({_id : new ObjectId(req.params.id)}).then((batiment)=>{
         if(batiment){
             res.render(pageBatiment, batiment);
         }else{

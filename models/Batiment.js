@@ -4,7 +4,6 @@ const mongoose 	= require('mongoose'),
 
 //------------------------------------------- Resources Schema
 let BatimentSchema = new Schema({
-    id : String,
     libelle : String,
     adresse : String,
     salle :[ {
