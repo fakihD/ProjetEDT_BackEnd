@@ -20,6 +20,7 @@ lienModifier = '/update/:id';
 lienSupprimer = '/delete/:id';
 lienGet = '/get/:id';
 lienGetWeek = '/get/:year/:week';
+lienClasseofWeek = '/Classe/Week'
 
 pageErreur ='';
 pageSeances = '';
@@ -39,6 +40,17 @@ app.get(lienAll, function (req, res) {
         res.redirect(lienErreur);
     })
 });
+
+app.get(lienClasseofWeek, function (req, res) {
+    Seance = mongoose.model('Seance');
+    week = DaysOfWeek(req.body.semaine, req.body.annee);
+    Seance.find({date:week,promo:{nom:req.body.classe}}).then((seances)=>{
+        res.render(pageSeances, seances);
+    },(err)=>{
+        res.redirect(lienErreur);
+    })
+});
+
 // -- CREATE
 app.post(lienAjouter, function (req, res) {
     Seance = mongoose.model('Seance');
