@@ -31,56 +31,66 @@ app.get(lienErreur, function(req, res) {
 
 // -- FIND ALL
 app.get(lienAll, function (req, res) {
+    console.log("Etage - FIND ALL");
+    
     Etage = mongoose.model('Etage');
     Etage.find().then((etages)=>{
-        res.render(pageEtages, etages);
+        res.send(etages);
     },(err)=>{
-        res.redirect(lienErreur);
+        res.send("Erreur:" + err);
     })
 });
 // -- CREATE
 app.post(lienAjouter, function (req, res) {
+    console.log("Etage - CREATE");
+    
     Etage = mongoose.model('Etage');
     newEtage = new Etage({});
 
     newEtage.save().then(()=>{
-        res.redirect(lienAll);
+        res.send("Done");
     },(err)=>{
-        res.redirect(lienErreur);
+        res.send("Erreur:" + err);
     })
 });
 
 // -- UPDATE
 app.put(lienModifier, function (req, res) {
-    mongoose.model('Etage').updateOne({id : req.params.id}, {$set : req.body}, (err, updatedEtage)=>{
+    console.log("Etage - UPDATE");
+    
+    mongoose.model('Etage').updateOne({_id : req.params.id}, {$set : req.body}, (err, updatedEtage)=>{
        if(err){
-            res.redirect(lienErreur);
+            res.send("Erreur:" + err);
        }else{
-            res.redirect(lienAll);
+            res.send("Done");
        }
     });
 });
 
 // -- DELETE
 app.delete(lienSupprimer, function (req, res) {
+    console.log("Etage - DELETE");
+    
     let Etage = mongoose.model('Etage');
     Etage.find({_id : new ObjectId(req.params.id)}).deleteOne().then(()=>{
-        res.redirect(lienAll);
+        res.send("Done");
     },(err)=>{
-        res.redirect(lienErreur);
+        res.send("Erreur:" + err);
     });
 });
 
 // -- READ
 app.get(lienGet, function (req, res) {
+    console.log("Etage - READ");
+    
     mongoose.model('Etage').findOne({_id : new ObjectId(req.params.id)}).then((etage)=>{
         if(etage){
-            res.render(pageEtage, etage);
+            res.send(etage);
         }else{
             res.status(404).json({message : "Inexistant"});
         }
     },(err)=>{
-        res.redirect(lienErreur);
+        res.send("Erreur:" + err);
     });
 });
 

@@ -31,56 +31,66 @@ app.get(lienErreur, function(req, res) {
 
 // -- FIND ALL
 app.get(lienAll, function (req, res) {
+    console.log("Salle - FIND ALL");
+    
     Salle = mongoose.model('Salle');
     Salle.find().then((salles)=>{
-        res.render(pageSalles, salles);
+        res.send(salles);
     },(err)=>{
-        res.redirect(lienErreur);
+        res.send("Erreur:" + err);
     })
 });
 // -- CREATE
 app.post(lienAjouter, function (req, res) {
+    console.log("Salle - CREATE");
+    
     Salle = mongoose.model('Salle');
     newSalle = new Salle({libelle:req.body.libelle, batiment:req.body.batiment});
 
     newSalle.save().then(()=>{
-        res.redirect(lienAll);
+        res.send("Done");
     },(err)=>{
-        res.redirect(lienErreur);
+        res.send("Erreur:" + err);
     })
 });
 
 // -- UPDATE
 app.put(lienModifier, function (req, res) {
-    mongoose.model('Salle').updateOne({id : req.params.id}, {$set : req.body}, (err, updatedSalle)=>{
+    console.log("Salle - UPDATE");
+    
+    mongoose.model('Salle').updateOne({_id : req.params.id}, {$set : req.body}, (err, updatedSalle)=>{
        if(err){
-            res.redirect(lienErreur);
+            res.send("Erreur:" + err);
        }else{
-            res.redirect(lienAll);
+            res.send("Done");
        }
     });
 });
 
 // -- DELETE
 app.delete(lienSupprimer, function (req, res) {
+    console.log("Salle - DELETE");
+    
     let Salle = mongoose.model('Salle');
     Salle.find({_id : new ObjectId(req.params.id)}).deleteOne().then(()=>{
-        res.redirect(lienAll);
+        res.send("Done");
     },(err)=>{
-        res.redirect(lienErreur);
+        res.send("Erreur:" + err);
     });
 });
 
 // -- READ
 app.get(lienGet, function (req, res) {
+    console.log("Salle - READ");
+    
     mongoose.model('Salle').findOne({_id : new ObjectId(req.params.id)}).then((salle)=>{
         if(salle){
-            res.render(pageSalle, salle);
+            res.send(salle);
         }else{
             res.status(404).json({message : "Inexistant"});
         }
     },(err)=>{
-        res.redirect(lienErreur);
+        res.send("Erreur:" + err);
     });
 });
 

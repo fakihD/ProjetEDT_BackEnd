@@ -20,7 +20,7 @@ lienModifier = '/update/:id';
 lienSupprimer = '/delete/:id';
 lienGet = '/get/:id';
 lienGetWeek = '/get/:year/:week';
-lienClasseofWeek = '/Classe/Week'
+lienWeekOfClasse = '/Classe/Week'
 
 pageErreur ='';
 pageSeances = '';
@@ -33,85 +33,101 @@ app.get(lienErreur, function(req, res) {
 
 // -- FIND ALL
 app.get(lienAll, function (req, res) {
-    Seance = mongoose.model('Seance');
+    console.log("Seance - READ");
+    
+    Seance = mongoose.model('FIND ALL');
     Seance.find().then((seances)=>{
-        res.render(pageSeances, seances);
+        res.send(seances);
     },(err)=>{
-        res.redirect(lienErreur);
+        res.send("Erreur:" + err);
     })
 });
 
-app.get(lienClasseofWeek, function (req, res) {
+app.get(lienWeekOfClasse, function (req, res) {
+    console.log("Seance - WeekOfClasse");
+    
     Seance = mongoose.model('Seance');
     week = DaysOfWeek(req.body.semaine, req.body.annee);
     Seance.find({date:week,promo:{nom:req.body.classe}}).then((seances)=>{
-        res.render(pageSeances, seances);
+        res.send(seances);
     },(err)=>{
-        res.redirect(lienErreur);
+        res.send("Erreur:" + err);
     })
 });
 
 // -- CREATE
 app.post(lienAjouter, function (req, res) {
+    console.log("Seance - CREATE");
+    
     Seance = mongoose.model('Seance');
 
     newSeance = new Seance({type:req.body.type, heureDebut:req.body.heureDebut, heureFin:req.body.heureFin, date:req.body.date, salle:req.body.salle, eleve:req.body.eleve, promo:req.body.promo, prof:req.body.prof, matiere:req.body.matiere});
 
     newSeance.save().then(()=>{
-        res.redirect(lienAll);
+        res.send("Done");
     },(err)=>{
-        res.redirect(lienErreur);
+        res.send("Erreur:" + err);
     })
 });
 
 // -- UPDATE
 app.put(lienModifier, function (req, res) {
-    mongoose.model('Seance').updateOne({id : req.params.id}, {$set : req.body}, (err, updatedSeance)=>{
+    console.log("Seance - UPDATE");
+    
+    mongoose.model('Seance').updateOne({_id : req.params.id}, {$set : req.body}, (err, updatedSeance)=>{
        if(err){
-            res.redirect(lienErreur);
+            res.send("Erreur:" + err);
        }else{
-            res.redirect(lienAll);
+            res.send("Done");
        }
     });
 });
 
 // -- DELETE
 app.delete(lienSupprimer, function (req, res) {
+    console.log("Seance - DELETE");
+    
     let Seance = mongoose.model('Seance');
     Seance.find({_id : new ObjectId(req.params.id)}).deleteOne().then(()=>{
-        res.redirect(lienAll);
+        res.send("Done");
     },(err)=>{
-        res.redirect(lienErreur);
+        res.send("Erreur:" + err);
     });
 });
 
 // -- READ
 app.get(lienGet, function (req, res) {
+    console.log("Seance - READ");
+    
     mongoose.model('Seance').findOne({_id : new ObjectId(req.params.id)}).then((seance)=>{
         if(seance){
-            res.render(pageSeance, seance);
+            res.send(seance);
         }else{
             res.status(404).json({message : "Inexistant"});
         }
     },(err)=>{
-        res.redirect(lienErreur);
+        res.send("Erreur:" + err);
     });
 });
 
 app.get(lienGetWeek, function (req, res) {
+    console.log("Seance - GetWeek");
+    
     var week = DaysOfWeek(req.params.week, req.params.year);
     mongoose.model('Seance').find({date : { $in: week }}).then((seances)=>{
         if(seances){
-            res.render(pageSeance, seances);
+            res.send(seances);
         }else{
             res.status(404).json({message : "Inexistant"});
         }
     },(err)=>{
-        res.redirect(lienErreur);
+        res.send("Erreur:" + err);
     });
 });
 
 function DaysOfWeek(sem, an){
+    console.log("Seance - DaysOfWeek");
+    
     var debut=new Date()
     debut.setUTCFullYear(an,0,1);
     var FirstDayOfYear= debut.getDay()
