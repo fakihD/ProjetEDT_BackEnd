@@ -7,7 +7,7 @@ let SeanceSchema = new Schema({
     type : String,
     heureDebut : String,
     heureFin : String,
-    date : String,
+    date : Date,
     salle :{
         libelle : String
     },

@@ -33,10 +33,12 @@ app.get(lienErreur, function(req, res) {
 
 // -- FIND ALL
 app.get(lienAll, function (req, res) {
-    console.log("Seance - READ");
+    console.log("Seance - FIND ALL");
     
-    Seance = mongoose.model('FIND ALL');
+    Seance = mongoose.model('Seance');
     Seance.find().then((seances)=>{
+        console.log("Seance - FIND ALL : " + seances);
+
         res.send(seances);
     },(err)=>{
         res.send("Erreur:" + err);
@@ -47,8 +49,16 @@ app.get(lienWeekOfClasse, function (req, res) {
     console.log("Seance - WeekOfClasse");
     
     Seance = mongoose.model('Seance');
-    week = DaysOfWeek(req.body.semaine, req.body.annee);
-    Seance.find({date:week,promo:{nom:req.body.classe}}).then((seances)=>{
+    Mondayweek = getDateOfISOWeek(req.body.semaine, req.body.annee);
+    week = [];
+    for(var i = 0; i < 7; i++){
+        week.push(new Date(Mondayweek.getFullYear(), Mondayweek.getMonth(), Mondayweek.getDate()).toISOString().substring(0,10));
+        Mondayweek.setDate(Mondayweek.getDate()+1);
+    }
+    console.log("Seance - WeekOfClasse:" + JSON.stringify(week));
+    Seance.find({promo:{ nom:req.body.nom, alias:req.body.alias }}).then((seances)=>{
+        seances = seances.filter(seance=> week.includes(seance.date.toISOString().substring(0,10)));
+
         res.send(seances);
     },(err)=>{
         res.send("Erreur:" + err);
@@ -113,9 +123,16 @@ app.get(lienGet, function (req, res) {
 app.get(lienGetWeek, function (req, res) {
     console.log("Seance - GetWeek");
     
-    var week = DaysOfWeek(req.params.week, req.params.year);
-    mongoose.model('Seance').find({date : { $in: week }}).then((seances)=>{
+    var Mondayweek = getDateOfISOWeek(req.params.week, req.params.year);
+    week = [];
+    for(var i = 0; i < 7; i++){
+        week.push(new Date(Mondayweek.getFullYear(), Mondayweek.getMonth(), Mondayweek.getDate()).toISOString().substring(0,10));
+        Mondayweek.setDate(Mondayweek.getDate()+1);
+    }
+    console.log("Seance - WeekOfClasse:" + JSON.stringify(week));
+    mongoose.model('Seance').find().then((seances)=>{
         if(seances){
+            seances = seances.filter(seance=> week.includes(seance.date.toISOString().substring(0,10)));
             res.send(seances);
         }else{
             res.status(404).json({message : "Inexistant"});
@@ -125,29 +142,17 @@ app.get(lienGetWeek, function (req, res) {
     });
 });
 
-function DaysOfWeek(sem, an){
-    console.log("Seance - DaysOfWeek");
-    
-    var debut=new Date()
-    debut.setUTCFullYear(an,0,1);
-    var FirstDayOfYear= debut.getDay()
-    var FirstBitLength=0
-    if (FirstDayOfYear>4){
-      FirstBitLength=  8-FirstDayOfYear
-      }
-   else {
-        FirstBitLength=  FirstDayOfYear-7
-      }
-   
-    adddays=(sem-1)*7+FirstBitLength+1
-   
-    var week = [];
-    for(var i = 0; i < 7; i++){
-        date = new Date()
-        date.setFullYear(an,0,adddays + i)
-        week.push(date.toLocaleString())
-    }
-    return week;
+function getDateOfISOWeek(w, y) {
+    console.log("Seance - DateOfISOWeek");
+
+    var simple = new Date(y, 0, 1 + (w - 1) * 7);
+    var dow = simple.getDay();
+    var ISOweekStart = simple;
+    if (dow <= 4)
+        ISOweekStart.setDate(simple.getDate() - simple.getDay() + 1);
+    else
+        ISOweekStart.setDate(simple.getDate() + 8 - simple.getDay());
+    return ISOweekStart;
 }
 
 module.exports = app;
