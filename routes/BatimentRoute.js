@@ -31,56 +31,66 @@ app.get(lienErreur, function(req, res) {
 
 // -- FIND ALL
 app.get(lienAll, function (req, res) {
+    console.log("Batiment - FIND ALL");
+
     Batiment = mongoose.model('Batiment');
     Batiment.find().then((batiments)=>{
-        res.render(pageBatiments, batiments);
+        res.send(batiments);
     },(err)=>{
-        res.redirect(lienErreur);
+        res.send("Erreur:" + err);
     })
 });
 // -- CREATE
 app.post(lienAjouter, function (req, res) {
+    console.log("Batiment - CREATE");
+    
     Batiment = mongoose.model('Batiment');
     newBatiment = new Batiment({libelle:req.body.libelle, adresse:req.body.adresse, salle:req.body.salle});
 
     newBatiment.save().then(()=>{
-        res.redirect(lienAll);
+        res.send("Done");
     },(err)=>{
-        res.redirect(lienErreur);
+        res.send("Erreur:" + err);
     })
 });
 
 // -- UPDATE
 app.put(lienModifier, function (req, res) {
-    mongoose.model('Batiment').updateOne({id : req.params.id}, {$set : req.body}, (err, updatedBatiment)=>{
+    console.log("Batiment - UPDATE");
+    
+    mongoose.model('Batiment').updateOne({_id : req.params.id}, {$set : req.body}, (err, updatedBatiment)=>{
        if(err){
-            res.redirect(lienErreur);
+            res.send("Erreur:" + err);
        }else{
-            res.redirect(lienAll);
+            res.send("Done");
        }
     });
 });
 
 // -- DELETE
 app.delete(lienSupprimer, function (req, res) {
+    console.log("Batiment - DELETE");
+    
     let Batiment = mongoose.model('Batiment');
     Batiment.find({_id : new ObjectId(req.params.id)}).deleteOne().then(()=>{
-        res.redirect(lienAll);
+        res.send("Done");
     },(err)=>{
-        res.redirect(lienErreur);
+        res.send("Erreur:" + err);
     });
 });
 
 // -- READ
 app.get(lienGet, function (req, res) {
+    console.log("Batiment - READ");
+    
     mongoose.model('Batiment').findOne({_id : new ObjectId(req.params.id)}).then((batiment)=>{
         if(batiment){
-            res.render(pageBatiment, batiment);
+            res.send(batiment);
         }else{
             res.status(404).json({message : "Inexistant"});
         }
     },(err)=>{
-        res.redirect(lienErreur);
+        res.send("Erreur:" + err);
     });
 });
 

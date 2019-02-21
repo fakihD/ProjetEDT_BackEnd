@@ -31,57 +31,67 @@ app.get(lienErreur, function(req, res) {
 
 // -- FIND ALL
 app.get(lienAll, function (req, res) {
+    console.log("Prof - FIND ALL");
+    
     Prof = mongoose.model('Prof');
     Prof.find().then((profs)=>{
-        res.render(pageProfs, profs);
+        res.send(profs);
     },(err)=>{
-        res.redirect(lienErreur);
+        res.send("Erreur:" + err);
     })
 });
 // -- CREATE
 app.post(lienAjouter, function (req, res) {
+    console.log("Prof - CREATE");
+    
     Prof = mongoose.model('Prof');
 
     newProf = new Prof({nom:req.body.nom, prenom:req.body.prenom, alias:req.body.alias, promo:req.body.promo, matiere:req.body.matiere});
 
     newProf.save().then(()=>{
-        res.redirect(lienAll);
+        res.send("Done");
     },(err)=>{
-        res.redirect(lienErreur);
+        res.send("Erreur:" + err);
     })
 });
 
 // -- UPDATE
 app.put(lienModifier, function (req, res) {
-    mongoose.model('Prof').updateOne({id : req.params.id}, {$set : req.body}, (err, updatedProf)=>{
+    console.log("Prof - UPDATE");
+    
+    mongoose.model('Prof').updateOne({_id : req.params.id}, {$set : req.body}, (err, updatedProf)=>{
        if(err){
-            res.redirect(lienErreur);
+            res.send("Erreur:" + err);
        }else{
-            res.redirect(lienAll);
+            res.send("Done");
        }
     });
 });
 
 // -- DELETE
 app.delete(lienSupprimer, function (req, res) {
+    console.log("Prof - DELETE");
+    
     let Prof = mongoose.model('Prof');
     Prof.find({_id : new ObjectId(req.params.id)}).deleteOne().then(()=>{
-        res.redirect(lienAll);
+        res.send("Done");
     },(err)=>{
-        res.redirect(lienErreur);
+        res.send("Erreur:" + err);
     });
 });
 
 // -- READ
 app.get(lienGet, function (req, res) {
+    console.log("Prof - READ");
+    
     mongoose.model('Prof').findOne({_id : new ObjectId(req.params.id)}).then((prof)=>{
         if(prof){
-            res.render(pageProf, prof);
+            res.send(prof);
         }else{
             res.status(404).json({message : "Inexistant"});
         }
     },(err)=>{
-        res.redirect(lienErreur);
+        res.send("Erreur:" + err);
     });
 });
 

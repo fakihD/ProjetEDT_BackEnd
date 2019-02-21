@@ -31,56 +31,66 @@ app.get(lienErreur, function(req, res) {
 
 // -- FIND ALL
 app.get(lienAll, function (req, res) {
+    console.log("Promo - FIND ALL");
+    
     Promo = mongoose.model('Promo');
     Promo.find().then((promos)=>{
-        res.render(pagePromos, promos);
+        res.send(promos);
     },(err)=>{
-        res.redirect(lienErreur);
+        res.send("Erreur:" + err);
     })
 });
 // -- CREATE
 app.post(lienAjouter, function (req, res) {
+    console.log("Promo - CREATE");
+    
     Promo = mongoose.model('Promo');
     newPromo = new Promo({nom:req.body.nom, alias:req.body.alias});
 
     newPromo.save().then(()=>{
-        res.redirect(lienAll);
+        res.send("Done");
     },(err)=>{
-        res.redirect(lienErreur);
+        res.send("Erreur:" + err);
     })
 });
 
 // -- UPDATE
 app.put(lienModifier, function (req, res) {
-    mongoose.model('Promo').updateOne({id : req.params.id}, {$set : req.body}, (err, updatedPromo)=>{
+    console.log("Promo - UPDATE");
+    
+    mongoose.model('Promo').updateOne({_id : req.params.id}, {$set : req.body}, (err, updatedPromo)=>{
        if(err){
-            res.redirect(lienErreur);
+            res.send("Erreur:" + err);
        }else{
-            res.redirect(lienAll);
+            res.send("Done");
        }
     });
 });
 
 // -- DELETE
 app.delete(lienSupprimer, function (req, res) {
+    console.log("Promo - DELETE");
+    
     let Promo = mongoose.model('Promo');
     Promo.find({_id : new ObjectId(req.params.id)}).deleteOne().then(()=>{
-        res.redirect(lienAll);
+        res.send("Done");
     },(err)=>{
-        res.redirect(lienErreur);
+        res.send("Erreur:" + err);
     });
 });
 
 // -- READ
 app.get(lienGet, function (req, res) {
+    console.log("Promo - READ");
+    
     mongoose.model('Promo').findOne({_id : new ObjectId(req.params.id)}).then((promo)=>{
         if(promo){
-            res.render(pagePromo, promo);
+            res.send(promo);
         }else{
             res.status(404).json({message : "Inexistant"});
         }
     },(err)=>{
-        res.redirect(lienErreur);
+        res.send("Erreur:" + err);
     });
 });
 
