@@ -71,7 +71,8 @@ app.post(lienAjouter, function (req, res) {
     
     Seance = mongoose.model('Seance');
 
-    newSeance = new Seance({type:req.body.type, heureDebut:req.body.heureDebut, heureFin:req.body.heureFin, date:req.body.date, salle:req.body.salle, eleve:req.body.eleve, promo:req.body.promo, prof:req.body.prof, matiere:req.body.matiere});
+    const dates = req.body.date.split("-");
+    newSeance = new Seance({type:req.body.type, heureDebut:req.body.heureDebut, heureFin:req.body.heureFin, date:new Date(dates[2], dates[1], dates[0]), salle:req.body.salle, eleve:req.body.eleve, promo:req.body.promo, prof:req.body.prof, matiere:req.body.matiere});
 
     newSeance.save().then(()=>{
         res.send("Done");
