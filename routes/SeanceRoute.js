@@ -72,7 +72,9 @@ app.post(lienAjouter, function (req, res) {
     Seance = mongoose.model('Seance');
 
     const dates = req.body.date.split("-");
-    newSeance = new Seance({type:req.body.type, heureDebut:req.body.heureDebut, heureFin:req.body.heureFin, date:new Date(dates[2], dates[1], dates[0]), salle:req.body.salle, eleve:req.body.eleve, promo:req.body.promo, prof:req.body.prof, matiere:req.body.matiere});
+    const date =new Date(dates[2], dates[1] - 1, dates[0]);
+    console.log("date:"+ date);
+    newSeance = new Seance({type:req.body.type, heureDebut:req.body.heureDebut, heureFin:req.body.heureFin, date:date, salle:req.body.salle, eleve:req.body.eleve, promo:req.body.promo, prof:req.body.prof, matiere:req.body.matiere});
 
     newSeance.save().then(()=>{
         res.send("Done");
