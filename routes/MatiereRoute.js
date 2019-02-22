@@ -1,23 +1,24 @@
-express = require('express'),
+express = require('express');
+mongoose = require('mongoose');
+bodyParser = require('body-parser');
+
+ObjectId = mongoose.Types.ObjectId;
 app = express();
-session = require('cookie-session');
 
 // --- middleware
 // - body-parser needed to catch and to treat information inside req.body
-let bodyParser = require('body-parser');
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended : true}));
-app.use(session({secret: 'todotopsecret'}))
 
 // -- Load model needed for the project
 require('../models/Matiere');
 
 lienErreur = '/error';
-lienAll = '/matieres/';
-lienAjouter = '/matieres/add';
-lienModifier = '/matieres/update/:id';
-lienSupprimer = '/matieres/delete/:id';
-lienGet = '/matieres/get/:id';
+lienAll = '/';
+lienAjouter = '/add';
+lienModifier = '/update/:id';
+lienSupprimer = '/delete/:id';
+lienGet = '/get/:id';
 
 pageErreur ='';
 pageMatieres = '';
@@ -30,55 +31,67 @@ app.get(lienErreur, function(req, res) {
 
 // -- FIND ALL
 app.get(lienAll, function (req, res) {
-    let Matiere = mongoose.model('Matiere');
+    console.log("Matiere - FIND ALL");
+    
+    Matiere = mongoose.model('Matiere');
     Matiere.find().then((matieres)=>{
-        res.render(pageMatieres, matieres);
+        res.send(matieres);
+    },(err)=>{
+        res.send("Erreur:" + err);
     })
 });
 // -- CREATE
 app.post(lienAjouter, function (req, res) {
-    let Matiere = mongoose.model('Matiere');
-    let newMatiere = new Matiere(req.body);
-    newMatiere.id = newMatiere._id;
+    console.log("Matiere - CREATE");
+    
+    Matiere = mongoose.model('Matiere');
+
+    newMatiere = new Matiere({nom:req.body.nom, alias:req.body.alias, prof:req.body.prof});
 
     newMatiere.save().then(()=>{
-        res.redirect(lienAll);
+        res.send("Done");
     },(err)=>{
-        res.redirect(lienErreur);
+        res.send("Erreur:" + err);
     })
 });
 
 // -- UPDATE
 app.put(lienModifier, function (req, res) {
-    mongoose.model('Matiere').updateOne({id : req.params.id}, {$set : req.body}, (err, updatedMatiere)=>{
+    console.log("Matiere - UPDATE");
+    
+    mongoose.model('Matiere').updateOne({_id : req.params.id}, {$set : req.body}, (err, updatedMatiere)=>{
        if(err){
-            res.redirect(lienErreur);
+            res.send("Erreur:" + err);
        }else{
-            res.redirect(lienAll);
+            res.send("Done");
        }
     });
 });
 
 // -- DELETE
 app.delete(lienSupprimer, function (req, res) {
+    console.log("Matiere - DELETE");
+    
     let Matiere = mongoose.model('Matiere');
-    Matiere.find({id : req.params.id}).deleteOne().then(()=>{
-        res.redirect(lienAll);
+    Matiere.find({_id : new ObjectId(req.params.id)}).deleteOne().then(()=>{
+        res.send("Done");
     },(err)=>{
-        res.redirect(lienErreur);
+        res.send("Erreur:" + err);
     });
 });
 
 // -- READ
 app.get(lienGet, function (req, res) {
-    mongoose.model('Matiere').findOne({id : req.params.id}).then((matiere)=>{
+    console.log("Matiere - READ");
+    
+    mongoose.model('Matiere').findOne({_id : new ObjectId(req.params.id)}).then((matiere)=>{
         if(matiere){
-            res.render(pageMatiere, matiere);
+            res.send(matiere);
         }else{
             res.status(404).json({message : "Inexistant"});
         }
     },(err)=>{
-        res.redirect(lienErreur);
+        res.send("Erreur:" + err);
     });
 });
 

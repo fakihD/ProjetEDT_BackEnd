@@ -4,11 +4,10 @@ const mongoose 	= require('mongoose'),
 
 //------------------------------------------- Resources Schema
 let SeanceSchema = new Schema({
-    id : String,
     type : String,
     heureDebut : String,
     heureFin : String,
-    date : String,
+    date : Date,
     salle :{
         libelle : String
     },

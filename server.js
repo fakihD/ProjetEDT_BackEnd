@@ -30,7 +30,14 @@ app.use(function (req, res, next) {
     next();
 });
 
-app.use('/prof',require('./routes/ProfRoute'));
+app.use('/profs',require('./routes/ProfRoute'));
+app.use('/batiments',require('./routes/BatimentRoute'));
+app.use('/eleves',require('./routes/EleveRoute'));
+app.use('/matieres',require('./routes/MatiereRoute'));
+app.use('/promos',require('./routes/PromoRoute'));
+app.use('/salles',require('./routes/SalleRoute'));
+app.use('/seances',require('./routes/SeanceRoute'));
+
 
 app.listen(3010);
 console.log("C'est en marche !");

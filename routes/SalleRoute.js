@@ -1,83 +1,96 @@
-express = require('express'),
+express = require('express');
+mongoose = require('mongoose');
+bodyParser = require('body-parser');
+
+ObjectId = mongoose.Types.ObjectId;
 app = express();
-session = require('cookie-session');
 
 // --- middleware
 // - body-parser needed to catch and to treat information inside req.body
-let bodyParser = require('body-parser');
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended : true}));
-app.use(session({secret: 'todotopsecret'}))
 
 // -- Load model needed for the project
 require('../models/Salle');
 
-let lienErreur = '/error';
-let lienFindAll = '/salles';
-let lienAjouter = '/salles/add';
-let lienModifier = '/salles/update/:id';
-let lienSupprimer = '/salles/delete/:id';
-let lienGet = '/salles/get/:id';
+lienErreur = '/error';
+lienAll = '/';
+lienAjouter = '/add';
+lienModifier = '/update/:id';
+lienSupprimer = '/delete/:id';
+lienGet = '/get/:id';
 
-let pageErreur ='';
-let pageSalle = '';
+pageErreur ='';
+pageSalles = '';
+pageSalle = '';
 
 // -- ERROR
 app.get(lienErreur, function(req, res) {
-    console.log("error");
+    res.render(pageErreur);
 })
 
 // -- FIND ALL
-app.get(lienFindAll, function (req, res) {
-    let Salle = mongoose.model('Salle');
+app.get(lienAll, function (req, res) {
+    console.log("Salle - FIND ALL");
+    
+    Salle = mongoose.model('Salle');
     Salle.find().then((salles)=>{
-        res.render(pageSalle, salles);
+        res.send(salles);
+    },(err)=>{
+        res.send("Erreur:" + err);
     })
 });
 // -- CREATE
 app.post(lienAjouter, function (req, res) {
-    let Salle = mongoose.model('Salle');
-    let newSalle = new Salle(req.body);
-    newSalle.id = newSalle._id;
+    console.log("Salle - CREATE");
+    
+    Salle = mongoose.model('Salle');
+    newSalle = new Salle({libelle:req.body.libelle, batiment:req.body.batiment});
 
     newSalle.save().then(()=>{
-        res.redirect(lienFindAll);
+        res.send("Done");
     },(err)=>{
-        res.redirect(lienErreur);
+        res.send("Erreur:" + err);
     })
 });
 
 // -- UPDATE
 app.put(lienModifier, function (req, res) {
-    mongoose.model('Salle').updateOne({id : req.params.id}, {$set : req.body}, (err, updatedSalle)=>{
+    console.log("Salle - UPDATE");
+    
+    mongoose.model('Salle').updateOne({_id : req.params.id}, {$set : req.body}, (err, updatedSalle)=>{
        if(err){
-            res.redirect(lienErreur);
+            res.send("Erreur:" + err);
        }else{
-            res.redirect(lienFindAll);
+            res.send("Done");
        }
     });
 });
 
 // -- DELETE
 app.delete(lienSupprimer, function (req, res) {
+    console.log("Salle - DELETE");
+    
     let Salle = mongoose.model('Salle');
-    Salle.find({id : req.params.id}).deleteOne().then(()=>{
-        res.redirect(lienFindAll);
+    Salle.find({_id : new ObjectId(req.params.id)}).deleteOne().then(()=>{
+        res.send("Done");
     },(err)=>{
-        res.redirect(lienErreur);
+        res.send("Erreur:" + err);
     });
 });
 
 // -- READ
 app.get(lienGet, function (req, res) {
-    mongoose.model('Salle').findOne({id : req.params.id}).then((salle)=>{
+    console.log("Salle - READ");
+    
+    mongoose.model('Salle').findOne({_id : new ObjectId(req.params.id)}).then((salle)=>{
         if(salle){
-            res.render(pageSalle, salle);
+            res.send(salle);
         }else{
             res.status(404).json({message : "Inexistant"});
         }
     },(err)=>{
-        res.redirect(lienErreur);
+        res.send("Erreur:" + err);
     });
 });
 

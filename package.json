@@ -1,11 +1,28 @@
 {
-    "name": "projetedt_backend",
-    "version": "0.1.0",
-    "dependencies": {
-        "bluebird": "^3.5.3",
-        "body-parser": "^1.18.3",
-        "cookie-session": "^2.0.0-beta.3",
-        "express": "^4.16.4",
-        "mongoose": "^5.4.6"
-    }
+  "name": "projetedt_backend",
+  "version": "0.1.0",
+  "dependencies": {
+    "bluebird": "^3.5.3",
+    "body-parser": "^1.18.3",
+    "cookie-session": "^2.0.0-beta.3",
+    "express": "^4.16.4",
+    "mongoose": "^5.4.6"
+  },
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "description": "",
+  "devDependencies": {},
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/fakihD/ProjetEDT_BackEnd.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/fakihD/ProjetEDT_BackEnd/issues"
+  },
+  "homepage": "https://github.com/fakihD/ProjetEDT_BackEnd#readme"
 }

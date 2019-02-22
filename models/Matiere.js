@@ -4,7 +4,6 @@ const mongoose 	= require('mongoose'),
 
 //------------------------------------------- Resources Schema
 let MatiereSchema = new Schema({
-    id : String,
     nom : String,
     alias : String,
     prof :[ {

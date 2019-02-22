@@ -1,23 +1,24 @@
-express = require('express'),
+express = require('express');
+mongoose = require('mongoose');
+bodyParser = require('body-parser');
+
+ObjectId = mongoose.Types.ObjectId;
 app = express();
-session = require('cookie-session');
 
 // --- middleware
 // - body-parser needed to catch and to treat information inside req.body
-let bodyParser = require('body-parser');
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended : true}));
-app.use(session({secret: 'todotopsecret'}))
 
 // -- Load model needed for the project
 require('../models/Batiment');
 
 lienErreur = '/error';
-lienAll = '/batiments/';
-lienAjouter = '/batiments/add';
-lienModifier = '/batiments/update/:id';
-lienSupprimer = '/batiments/delete/:id';
-lienGet = '/batiments/get/:id';
+lienAll = '/';
+lienAjouter = '/add';
+lienModifier = '/update/:id';
+lienSupprimer = '/delete/:id';
+lienGet = '/get/:id';
 
 pageErreur ='';
 pageBatiments = '';
@@ -30,55 +31,66 @@ app.get(lienErreur, function(req, res) {
 
 // -- FIND ALL
 app.get(lienAll, function (req, res) {
-    let Batiment = mongoose.model('Batiment');
+    console.log("Batiment - FIND ALL");
+
+    Batiment = mongoose.model('Batiment');
     Batiment.find().then((batiments)=>{
-        res.render(pageBatiments, batiments);
+        res.send(batiments);
+    },(err)=>{
+        res.send("Erreur:" + err);
     })
 });
 // -- CREATE
 app.post(lienAjouter, function (req, res) {
-    let Batiment = mongoose.model('Batiment');
-    let newBatiment = new Batiment(req.body);
-    newBatiment.id = newBatiment._id;
+    console.log("Batiment - CREATE");
+    
+    Batiment = mongoose.model('Batiment');
+    newBatiment = new Batiment({libelle:req.body.libelle, adresse:req.body.adresse, salle:req.body.salle});
 
     newBatiment.save().then(()=>{
-        res.redirect(lienAll);
+        res.send("Done");
     },(err)=>{
-        res.redirect(lienErreur);
+        res.send("Erreur:" + err);
     })
 });
 
 // -- UPDATE
 app.put(lienModifier, function (req, res) {
-    mongoose.model('Batiment').updateOne({id : req.params.id}, {$set : req.body}, (err, updatedBatiment)=>{
+    console.log("Batiment - UPDATE");
+    
+    mongoose.model('Batiment').updateOne({_id : req.params.id}, {$set : req.body}, (err, updatedBatiment)=>{
        if(err){
-            res.redirect(lienErreur);
+            res.send("Erreur:" + err);
        }else{
-            res.redirect(lienAll);
+            res.send("Done");
        }
     });
 });
 
 // -- DELETE
 app.delete(lienSupprimer, function (req, res) {
+    console.log("Batiment - DELETE");
+    
     let Batiment = mongoose.model('Batiment');
-    Batiment.find({id : req.params.id}).deleteOne().then(()=>{
-        res.redirect(lienAll);
+    Batiment.find({_id : new ObjectId(req.params.id)}).deleteOne().then(()=>{
+        res.send("Done");
     },(err)=>{
-        res.redirect(lienErreur);
+        res.send("Erreur:" + err);
     });
 });
 
 // -- READ
 app.get(lienGet, function (req, res) {
-    mongoose.model('Batiment').findOne({id : req.params.id}).then((batiment)=>{
+    console.log("Batiment - READ");
+    
+    mongoose.model('Batiment').findOne({_id : new ObjectId(req.params.id)}).then((batiment)=>{
         if(batiment){
-            res.render(pageBatiment, batiment);
+            res.send(batiment);
         }else{
             res.status(404).json({message : "Inexistant"});
         }
     },(err)=>{
-        res.redirect(lienErreur);
+        res.send("Erreur:" + err);
     });
 });
 
